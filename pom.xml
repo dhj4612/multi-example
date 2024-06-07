@@ -4,14 +4,54 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+   # 单独模块打包 -Dmaven.repo.remote 指定远程仓库地址 -Dmaven.repo.local 指定本地镜像地址
+   mvn clean package -pl /user -am -DskipTests=true -P test -Dmaven.repo.remote=https://maven.aliyun.com/repository/public
+
+   # 子模块同时打包
+   mvn clean package -DskipTests=true -P test -Dmaven.repo.remote=https://maven.aliyun.com/repository/public
+
+   如果想隐藏依赖，可以使用 <scope>provided</scope> 或 <optional>true</optional>
+     -provided 使得依赖只在编译和测试期间有效，其他模块不会引入 scope 为 provided 的依赖
+     -optional 使得依赖不具备传递性，其他模块也不会引入
+   -->
+
+    <!--交由 springboot 父项目管理-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.6</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
     <groupId>org.example</groupId>
     <artifactId>multi-example</artifactId>
     <version>1.0</version>
+    <packaging>pom</packaging>
+    <description>root module</description>
+
+    <modules>
+        <module>components</module>
+        <module>services</module>
+        <module>business</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.2.6</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
