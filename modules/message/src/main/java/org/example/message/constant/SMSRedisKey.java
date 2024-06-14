@@ -2,8 +2,8 @@ package org.example.message.constant;
 
 import org.example.core.utils.AesUtil;
 
-public final class SMSMessageRedisKey {
-    private SMSMessageRedisKey() {
+public final class SMSRedisKey {
+    private SMSRedisKey() {
     }
 
     public static final String VerifyCodeRedisKey = "sms:code:%s:%s:%s";
@@ -13,7 +13,7 @@ public final class SMSMessageRedisKey {
      * @param type 发送类型
      * @param source 发送来源
      */
-    public static String getVerifyCodeRedisKey(SMSMessageType type, String source, String phone) {
+    public static String getVerifyCodeRedisKey(SMSVerifyCodeType type, String source, String phone) {
         return VerifyCodeRedisKey.formatted(type.name().toLowerCase(), source.toLowerCase(), AesUtil.encrypt(phone));
     }
 }

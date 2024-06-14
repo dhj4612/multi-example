@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum SMSMessageType {
+public enum SMSVerifyCodeType {
     /**
-     * 登录发送验证码
+     * 登录
      */
     Login,
 
     /**
-     * 注册发送验证码
+     * 注册
      */
     Register,
 }

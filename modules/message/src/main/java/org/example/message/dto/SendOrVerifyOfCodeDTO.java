@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.example.message.constant.SMSMessageType;
+import org.example.message.constant.SMSVerifyCodeType;
 import org.example.message.validate.SendCodeValidate;
 import org.example.message.validate.VerifyCodeValidate;
 
@@ -21,7 +21,7 @@ public class SendOrVerifyOfCodeDTO {
     private String source;
 
     @NotNull(message = "发送类型不能为空", groups = {SendCodeValidate.class, VerifyCodeValidate.class})
-    private SMSMessageType type;
+    private SMSVerifyCodeType type;
 
     private SendSMSConfigDTO config;
 }

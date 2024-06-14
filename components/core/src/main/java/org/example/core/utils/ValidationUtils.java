@@ -34,11 +34,10 @@ public class ValidationUtils {
             return this;
         }
 
-        public ValidationResultProcess<T> orElse(Consumer<String> action) {
+        public void orElse(Consumer<String> action) {
             if (!passed()) {
                 action.accept(splicingErrorMessage());
             }
-            return this;
         }
 
         public String splicingErrorMessage() {

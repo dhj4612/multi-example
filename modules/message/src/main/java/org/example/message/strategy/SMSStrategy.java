@@ -5,13 +5,14 @@ import java.util.Map;
 /**
  * 短信发送策略抽象
  */
-public interface SmsStrategy {
+public interface SMSStrategy {
 
     /**
-     * 发送短信
+     * 发送短信验证码
      *
      * @param phone 手机号
+     * @param code 验证码
      * @param params 参数
      */
-    void send(String phone, Map<String, String> params);
+    void sendCode(String phone, String code, Map<String, Object> params);
 }

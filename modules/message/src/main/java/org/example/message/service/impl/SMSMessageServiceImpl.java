@@ -5,15 +5,18 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.example.core.exception.BizException;
 import org.example.core.utils.ValidationUtils;
-import org.example.message.constant.SMSMessageRedisKey;
+import org.example.message.constant.SMSRedisKey;
 import org.example.message.dto.SendOrVerifyOfCodeDTO;
 import org.example.message.service.SMSMessageService;
+import org.example.message.strategy.SMSContext;
+import org.example.message.strategy.SMSStrategy;
 import org.example.message.validate.SendCodeValidate;
 import org.example.message.validate.VerifyCodeValidate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -30,13 +33,17 @@ public class SMSMessageServiceImpl implements SMSMessageService {
             ValidationUtils.warpValidate(dto.getConfig()).throwIfNotPassed();
         }
 
-        final String key = SMSMessageRedisKey.getVerifyCodeRedisKey(dto.getType(), dto.getSource(), dto.getPhone());
+        final String key = SMSRedisKey.getVerifyCodeRedisKey(dto.getType(), dto.getSource(), dto.getPhone());
         final String cacheCode = redisTemplate.opsForValue().get(key);
         if (StringUtils.hasLength(cacheCode)) {
             throw new BizException("验证码发送频繁");
         }
         final String code = RandomUtil.randomNumbers(6);
 
+        SMSStrategy sendStrategy = SMSContext.getStrategy(dto.getConfig());
+        Objects.requireNonNull(sendStrategy, "短信发送通道不能为空");
+        // TODO 短信发送策略
+        //sendStrategy.sendCode(dto.getPhone(), dto.getCode(), dto.gec);
         redisTemplate.opsForValue().set(
                 key,
                 code,
@@ -50,7 +57,7 @@ public class SMSMessageServiceImpl implements SMSMessageService {
     public boolean verifyCode(SendOrVerifyOfCodeDTO dto) {
         ValidationUtils.warpValidate(dto, VerifyCodeValidate.class).throwIfNotPassed();
 
-        final String key = SMSMessageRedisKey.getVerifyCodeRedisKey(dto.getType(), dto.getSource(), dto.getPhone());
+        final String key = SMSRedisKey.getVerifyCodeRedisKey(dto.getType(), dto.getSource(), dto.getPhone());
         String cacheCode = redisTemplate.opsForValue().get(key);
         if (!StringUtils.hasLength(cacheCode)) {
             return false;
