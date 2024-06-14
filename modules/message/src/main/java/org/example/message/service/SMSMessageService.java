@@ -1,24 +1,17 @@
 package org.example.message.service;
 
-import org.example.message.constant.SMSMessageType;
+import org.example.message.dto.SendOrVerifyOfCodeDTO;
 
 public interface SMSMessageService {
 
     /**
      * 发送短信验证码
-     *
-     * @param phone    手机号
-     * @param sendType 发送类型
+     * @return 返回发送的验证码
      */
-    void sendCode(String phone, SMSMessageType sendType);
+    String sendCode(SendOrVerifyOfCodeDTO dto);
 
     /**
      * 校验短信验证码
-     *
-     * @param phone      手机号
-     * @param code 验证码
-     * @param sendType   发送类型
-     * @return true 校验通过
      */
-    boolean verifyCode(String phone, String code, SMSMessageType sendType);
+    boolean verifyCode(SendOrVerifyOfCodeDTO dto);
 }

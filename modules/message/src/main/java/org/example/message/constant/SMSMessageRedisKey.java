@@ -1,13 +1,17 @@
 package org.example.message.constant;
 
 public final class SMSMessageRedisKey {
-    public static final String SendCodeRedisKey = "sms:code:";
-
-    public static String getLoginSendCodeRedisKey() {
-        return SendCodeRedisKey + SMSMessageType.CLogin.name().toLowerCase() + ":";
+    private SMSMessageRedisKey() {
     }
 
-    public static String getSendCodeRedisKey(SMSMessageType type) {
-        return SendCodeRedisKey + type.name().toLowerCase() + ":";
+    public static final String SendCodeRedisKey = "sms:code:";
+
+    /**
+     * 获取验证码发送缓存key
+     * @param type 发送类型
+     * @param source 发送来源
+     */
+    public static String getSendCodeRedisKey(SMSMessageType type, String source) {
+        return SendCodeRedisKey + type.name().toLowerCase() + ":" + source.toLowerCase() + ":";
     }
 }
