@@ -23,5 +23,5 @@ public class SendOrVerifyOfCodeDTO {
     @NotNull(message = "发送类型不能为空", groups = {SendCodeValidate.class, VerifyCodeValidate.class})
     private SMSMessageType type;
 
-    private SendConfigDTO config;
+    private SendSMSConfigDTO config;
 }

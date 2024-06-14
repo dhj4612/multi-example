@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Data
 @Accessors(chain = true)
-public class SendConfigDTO {
+public class SendSMSConfigDTO {
     /**
      * 短信发送通道
      */
