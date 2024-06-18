@@ -26,6 +26,9 @@ public class SMSMessageServiceImpl implements SMSMessageService {
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
 
+    @Resource
+    private SMSContext smsContext;
+
     @Override
     public String sendCode(SendOrVerifyOfCodeDTO dto) {
         ValidationUtils.warpValidate(dto, SendCodeValidate.class).throwIfNotPassed();
@@ -40,10 +43,10 @@ public class SMSMessageServiceImpl implements SMSMessageService {
         }
         final String code = RandomUtil.randomNumbers(6);
 
-        SMSStrategy sendStrategy = SMSContext.getStrategy(dto.getConfig());
+        SMSStrategy sendStrategy = smsContext.getStrategy(dto.getConfig());
         Objects.requireNonNull(sendStrategy, "短信发送通道不能为空");
-        // TODO 短信发送策略
-        //sendStrategy.sendCode(dto.getPhone(), dto.getCode(), dto.gec);
+        sendStrategy.sendCode(dto);
+
         redisTemplate.opsForValue().set(
                 key,
                 code,

@@ -8,6 +8,8 @@ import org.example.message.constant.SMSVerifyCodeType;
 import org.example.message.validate.SendCodeValidate;
 import org.example.message.validate.VerifyCodeValidate;
 
+import java.util.Map;
+
 @Data
 @Accessors(chain = true)
 public class SendOrVerifyOfCodeDTO {
@@ -23,5 +25,10 @@ public class SendOrVerifyOfCodeDTO {
     @NotNull(message = "发送类型不能为空", groups = {SendCodeValidate.class, VerifyCodeValidate.class})
     private SMSVerifyCodeType type;
 
-    private SendSMSConfigDTO config;
+    private SMSConfigDTO config;
+
+    /**
+     * 扩展参数
+     */
+    private Map<String, Object> extend;
 }

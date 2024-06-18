@@ -12,6 +12,7 @@
 
     <artifactId>modules</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>auth</module>
         <module>log</module>
