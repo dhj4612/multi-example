@@ -8,6 +8,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class SMSContext {
@@ -30,10 +31,16 @@ public class SMSContext {
 
         if (config == null) {
             // TODO 轮询短信配置
-            redisTemplate.opsForValue().increment(SmsConfigCacheKey);
+            config = next(configList);
         }
 
         // TODO 根据短信配置获取短信发送策略
         return null;
+    }
+
+    private SMSConfigDTO next(List<SMSConfigDTO> configList) {
+        Long idx = redisTemplate.opsForValue().increment(SmsConfigRoundKey);
+        Objects.requireNonNull(idx, "获取短信配置失败");
+        return configList.get((int) (idx % configList.size()));
     }
 }
