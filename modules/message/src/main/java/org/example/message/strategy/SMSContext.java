@@ -3,9 +3,11 @@ package org.example.message.strategy;
 import cn.hutool.json.JSONUtil;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
+import org.example.core.exception.BizException;
 import org.example.message.dto.SMSConfigDTO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +17,9 @@ public class SMSContext {
 
     public static final String SmsConfigCacheKey = "sms:config:cache:key";
     public static final String SmsConfigRoundKey = "sms:config:round:key";
+
+    @Resource
+    private List<SMSStrategy> strategyList;
 
     @Resource(name = "stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
@@ -28,14 +33,20 @@ public class SMSContext {
         }
 
         List<SMSConfigDTO> configList = JSONUtil.toList(configCache, SMSConfigDTO.class);
-
         if (config == null) {
-            // TODO 轮询短信配置
             config = next(configList);
         }
+        return findStrategy(config);
+    }
 
-        // TODO 根据短信配置获取短信发送策略
-        return null;
+    private SMSStrategy findStrategy(SMSConfigDTO config) {
+        if (CollectionUtils.isEmpty(this.strategyList)) {
+            return null;
+        }
+        return this.strategyList.stream()
+                .filter(strategy -> Objects.equals(strategy.name(), config.getChannel()))
+                .findFirst()
+                .orElseThrow(() -> new BizException("短信通道不存在"));
     }
 
     private SMSConfigDTO next(List<SMSConfigDTO> configList) {

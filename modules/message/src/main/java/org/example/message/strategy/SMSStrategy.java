@@ -7,6 +7,8 @@ import org.example.message.dto.SendOrVerifyOfCodeDTO;
  */
 public interface SMSStrategy {
 
+    String name();
+
     /**
      * 发送短信验证码
      */
