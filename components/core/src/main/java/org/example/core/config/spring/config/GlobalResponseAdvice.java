@@ -30,8 +30,7 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object>, Seriali
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> clazz) {
         // 自定义异常不处理
-        //return !returnType.getContainingClass().isAssignableFrom(GlobalExceptionHandler.class);
-        return true;
+        return !returnType.getContainingClass().isAssignableFrom(GlobalExceptionHandler.class);
     }
 
     @Override
@@ -47,8 +46,7 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object>, Seriali
                 response.getHeaders().set("Content-Type", ContentType.JSON.getValue());
                 yield JSONUtil.toJsonStr(ReturnData.ok(response));
             }
-            case ResponseEntity<?> _ -> result;
-            case ReturnData<?> _ -> response;
+            case ResponseEntity<?> _, ReturnData<?> _ -> result;
             default -> ReturnData.ok(result);
         };
     }

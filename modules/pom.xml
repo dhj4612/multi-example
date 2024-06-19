@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>auth</module>
+        <module>authentication</module>
         <module>log</module>
         <module>message</module>
     </modules>

@@ -16,7 +16,7 @@ public class SendOrVerifyOfCodeDTO {
     @NotBlank(message = "手机号不能为空", groups = {SendCodeValidate.class, VerifyCodeValidate.class})
     private String phone;
 
-    @NotBlank(message = "校验验证码不能为空", groups = {SendCodeValidate.class})
+    @NotBlank(message = "验证码不能为空", groups = {VerifyCodeValidate.class})
     private String code;
 
     @NotBlank(message = "发送来源不能为空", groups = {SendCodeValidate.class, VerifyCodeValidate.class})

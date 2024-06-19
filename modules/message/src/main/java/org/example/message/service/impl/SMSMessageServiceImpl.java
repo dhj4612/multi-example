@@ -4,6 +4,7 @@ import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.example.core.exception.BizException;
+import org.example.core.utils.ProfileUtil;
 import org.example.core.utils.ValidationUtils;
 import org.example.message.constant.SMSRedisKey;
 import org.example.message.dto.SendOrVerifyOfCodeDTO;
@@ -29,6 +30,9 @@ public class SMSMessageServiceImpl implements SMSMessageService {
     @Resource
     private SMSContext smsContext;
 
+    @Resource
+    private ProfileUtil profileUtil;
+
     @Override
     public String sendCode(SendOrVerifyOfCodeDTO dto) {
         ValidationUtils.warpValidate(dto, SendCodeValidate.class).throwIfNotPassed();
@@ -43,9 +47,12 @@ public class SMSMessageServiceImpl implements SMSMessageService {
         }
         final String code = RandomUtil.randomNumbers(6);
 
-        SMSStrategy sendStrategy = smsContext.getStrategy(dto.getConfig());
-        Objects.requireNonNull(sendStrategy, "短信发送通道不能为空");
-        sendStrategy.sendCode(dto);
+        if (!profileUtil.isDev()) {
+            dto.setCode(code);
+            SMSStrategy sendStrategy = smsContext.getStrategy(dto.getConfig());
+            Objects.requireNonNull(sendStrategy, "短信发送通道不能为空");
+            sendStrategy.sendCode(dto);
+        }
 
         redisTemplate.opsForValue().set(
                 key,

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.auth.mapper.UserAuthoritiesMapper">
+
+    <!-- 通用查询映射结果 -->
+<!--    <resultMap id="BasicResultMap" type="org.example.loginauth.module.common.user.model.entity.UserAuthorities">-->
+<!--        <id column="id" property="id" />-->
+<!--        <result column="deleted" property="deleted" />-->
+<!--        <result column="create_time" property="createTime" />-->
+<!--        <result column="update_time" property="updateTime" />-->
+<!--        <result column="version" property="version" />-->
+<!--        <result column="user_id" property="userId" />-->
+<!--        <result column="identity_type" property="identityType"-->
+<!--                typeHandler="org.example.loginauth.farmwork.mybatis_plus.core.DbFieldCryptoHandler"/>-->
+<!--        <result column="identifier" property="identifier" />-->
+<!--        <result column="credential" property="credential" />-->
+<!--        <result column="state" property="state" />-->
+<!--    </resultMap>-->
+
+</mapper>
