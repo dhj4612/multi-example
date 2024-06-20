@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.List;
@@ -44,19 +45,12 @@ public class SecurityConfig {
         // 忽略授权的地址列表
         List<String> allowResources = apiResourcesUtil.getApiResourceByAnnotation(Anonymous.class);
         http
-                .headers(headers ->
-                        headers.contentSecurityPolicy(csp -> csp.policyDirectives("script-src 'self'; object-src 'none';"))
-                )
-                .cors(Customizer.withDefaults())
-
                 // xss 防护
+                .headers(headers -> headers.contentSecurityPolicy(csp -> csp.policyDirectives("script-src 'self'; object-src 'none';")))
                 .addFilterBefore(new XssFilter(xssProperties), UsernamePasswordAuthenticationFilter.class)
 
                 // 身份验证过滤器 框架
                 .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
-
-                // 禁用 session
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(allowResources.toArray(new String[0])).permitAll() // 允许匿名访问的请求
                         .requestMatchers("/actuator/**").permitAll() // 允许监控端点的请求
@@ -65,15 +59,25 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated() // 其余请求全部需要验证
                 )
+
+                // 自定义登录\授权异常处理
                 .exceptionHandling(ex -> {
-                    // 未登录异常处理器，即 AuthenticationException
+                    // 登录异常：AuthenticationException
                     ex.authenticationEntryPoint(new SecurityAuthenticationEntryPoint());
-                    // 未授权异常处理器，即 AccessDeniedException
+                    // 授权异常：AccessDeniedException
                     ex.accessDeniedHandler(new SecurityAccessDeniedHandler());
                 })
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+
+                // 其他配置
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable) // csrf 禁用（基于 token 认证不需要 csrf）
-                .formLogin(AbstractHttpConfigurer::disable); // 表单认证禁用
+                .formLogin(AbstractHttpConfigurer::disable) // 表单认证禁用
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .requestCache(cache -> cache.requestCache(new NullRequestCache()))
+                .anonymous(AbstractHttpConfigurer::disable)  // 无需给用户一个匿名身份
+                .sessionManagement(AbstractHttpConfigurer::disable); // 禁用 session
+
         return http.build();
     }
 }
