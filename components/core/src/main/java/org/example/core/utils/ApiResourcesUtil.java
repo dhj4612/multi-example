@@ -17,7 +17,7 @@ public class ApiResourcesUtil {
     /**
      * 根据注解类型获取Api资源
      */
-    public  <T extends Annotation> List<String> getApiResourceByAnnotation(Class<T> annotationType) {
+    public <T extends Annotation> List<String> getApiResourceByAnnotation(Class<T> annotationType) {
         RequestMappingHandlerMapping handlerMapping = applicationContext
                 .getBean("requestMappingHandlerMapping", RequestMappingHandlerMapping.class);
 
