@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class TimeTaskJob {
 
-    @Scheduled(cron = "0/5 * * * * *")
+    //@Scheduled(cron = "0/5 * * * * *")
     @Async("globalThreadPool")
     public void example() {
         log.info(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
